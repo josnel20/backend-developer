@@ -1,28 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @Column()
-  name?: string;
+  name: string;
 
   @Column()
-  email?: string;
+  email: string;
 
   @Column()
-  role?: string;
+  role: string;
 
   @Column({ default: false })
-  isOnboarded?: boolean;
+  isOnboarded: boolean;
 
-  @CreateDateColumn()
-  createdAt?: Date;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updatedAt?: Date;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt?: Date;
+  @Column({ type: "timestamp", nullable: true })
+  deletedAt: Date | null;
 }
