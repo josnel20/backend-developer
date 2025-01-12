@@ -1,12 +1,12 @@
 {
     "type": "postgres",
-    "host": "database",
+    "host": "localhost",
     "port": 5432,
     "username": "postgres",
     "password": "admin",
     "database": "mydb",
     "synchronize": true,
-    "logging": false,
+    "logging": true,
     "entities": [
        "src/entity/**/*.ts"
     ],
@@ -22,4 +22,3 @@
        "subscribersDir": "src/subscriber"
     }
   }
-  
