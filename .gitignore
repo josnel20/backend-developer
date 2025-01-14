@@ -1,0 +1,3 @@
+/node_modules
+# docker exec -it backend-developer-database-1 psql -U postgres -d mydb 
+
