@@ -3,26 +3,26 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  role: string;
+  role!: string;
 
   @Column({ default: false })
-  isOnboarded: boolean;
+  isOnboarded!: boolean;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ type: "timestamp", nullable: true })
-  deletedAt: Date | null;
+  deletedAt!: Date | null;
 }

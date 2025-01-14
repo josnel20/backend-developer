@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import Koa from "koa";
 import Router from "koa-router";
+import { AppDataSource } from "./data-source";
 import bodyParser from "koa-bodyparser";
 import session from "koa-session";
 import { CognitoIdentityProviderClient, InitiateAuthCommand } from "@aws-sdk/client-cognito-identity-provider";
@@ -16,6 +17,17 @@ dotenv.config();
 // Inicializando o Koa
 const app = new Koa();
 const router = new Router();
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Database Conectado com sucesso!");
+
+    app.listen(3000, () => {
+      console.log(`O serviço está rodando na porta: http://localhost:3000`);
+    });
+  })
+  .catch((error) => console.error("Erro ao conectar ao Database: ", error));
+
 
 const COGNITO_USER_POOL_ID = "us-east-1_35znuAYPN";
 const cognitoRegiao: string = process.env.COGNITO_REGION as string;
@@ -379,9 +391,4 @@ router.get("/users", authMiddlewareAdm, async (ctx) => {
   }
 });
 
-
 app.use(router.routes()).use(router.allowedMethods());
-
-app.listen(3000, () => {
-  console.log("Servidor rodando em http://localhost:3000");
-});
