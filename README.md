@@ -2,6 +2,8 @@
 
 Esta é uma aplicação desenvolvida em Node.js usando o framework Koa. Ela integra autenticação com AWS Cognito e utiliza um banco de dados PostgreSQL para gerenciar usuários.
 
+Para exibir a documentação swegger; localize o arquivo doc.yaml e no seu editor de código (vsc), instale a biblioteca `openAPI SwaggerUI preview`
+
 ## Requisitos
 
 Certifique-se de que as seguintes ferramentas estão instaladas no seu ambiente:
