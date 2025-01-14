@@ -1,0 +1,186 @@
+openapi: 3.0.1
+info:
+  title: API de Autenticação e Gerenciamento de Usuários
+  description: API para autenticação com AWS Cognito e gerenciamento de usuários em um banco PostgreSQL.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: API de Autenticação local
+paths:
+  /auth:
+    post:
+      summary: Autenticação de usuário
+      description: Endpoint para autenticar o usuário com o AWS Cognito usando nome de usuário e senha.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login realizado com sucesso!"
+                  tokenSet:
+                    type: object
+                    properties:
+                      idToken:
+                        type: string
+                      accessToken:
+                        type: string
+                      refreshToken:
+                        type: string
+        '400':
+          description: Falha na autenticação, usuário ou senha ausentes
+        '500':
+          description: Erro no servidor
+
+  /me:
+    post:
+      summary: Cadastro ou login do usuário
+      description: Endpoint para verificar se o usuário existe, ou registrar um novo usuário no banco de dados.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                role:
+                  type: string
+                  example: "admin"
+                name:
+                  type: string
+                  example: "John Doe"
+      responses:
+        '200':
+          description: Login bem-sucedido ou usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login bem-sucedido"
+                  userResult:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      name:
+                        type: string
+        '400':
+          description: Falta de campos obrigatórios (email, role ou name)
+        '500':
+          description: Erro no processo de autenticação ou criação de usuário
+
+  /edit-account:
+    post:
+      summary: Editar informações de conta de usuário
+      description: Endpoint para usuários editarem informações de sua conta. Admins podem editar qualquer usuário, enquanto usuários comuns podem editar apenas o próprio nome.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Novo Nome"
+                role:
+                  type: string
+                  example: "user"
+                idUser:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Informações do usuário atualizadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Nome atualizado com sucesso."
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      role:
+                        type: string
+        '400':
+          description: Falta de campos obrigatórios
+        '403':
+          description: Usuário não tem permissões para editar essas informações
+        '404':
+          description: Usuário não encontrado
+        '500':
+          description: Erro no servidor
+
+  /users:
+    get:
+      summary: Listar todos os usuários
+      description: Endpoint para listar todos os usuários cadastrados, acessível apenas para administradores.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    email:
+                      type: string
+                    role:
+                      type: string
+                    name:
+                      type: string
+        '403':
+          description: Acesso negado, usuário não tem permissões de administrador
+        '500':
+          description: Erro no servidor
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

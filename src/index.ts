@@ -29,7 +29,7 @@ AppDataSource.initialize()
   .catch((error) => console.error("Erro ao conectar ao Database: ", error));
 
 
-const COGNITO_USER_POOL_ID = "us-east-1_35znuAYPN";
+const COGNITO_USER_POOL_ID: string = process.env.COGNITO_USER_POOL_ID as string;
 const cognitoRegiao: string = process.env.COGNITO_REGION as string;
 const cognitoClienteId: string = process.env.COGNITO_CLIENT_ID as string;
 const cognitoSecretClient: string = process.env.COGNITO_SECRET_CLIENT as string;
@@ -100,7 +100,7 @@ function getKey(header: any, callback: any) {
   });
 }
 
-//5 Middleware de Autorização
+//5-Middleware de Autorização
 const authMiddleware: Middleware = async (ctx, next) => {
   const authHeader = ctx.headers.authorization;
 
@@ -151,18 +151,18 @@ const authMiddlewareAdm: Middleware = async (ctx, next) => {
         token,
         getKey,
         {
-          algorithms: ["RS256"], // Algoritmo usado pelo Cognito
+          algorithms: ["RS256"],
         },
         (err, decoded) => {
           if (err) reject(err);
-          resolve(decoded as DecodedToken); // Afirmação de tipo
+          resolve(decoded as DecodedToken);
         }
       );
     });
 
     ctx.state.user = decoded;
 
-    // Verificar se o usuário tem o escopo de administrador
+    // Validação de escopo de administrador
     const hasAdminScope = decoded.scope && decoded.scope.includes("aws.cognito.signin.user.admin");
 
     if (hasAdminScope) {
@@ -197,7 +197,7 @@ async function authenticateUser(username: string, password: string): Promise<Tok
   console.log("Secret Hash gerado:", secretHash);
 
   const authParams = {
-    AuthFlow: "USER_PASSWORD_AUTH" as AuthFlowType, // Tipo correto para o AuthFlow
+    AuthFlow: "USER_PASSWORD_AUTH" as AuthFlowType,
     ClientId: cognitoClienteId,
     AuthParameters: {
       USERNAME: username,
